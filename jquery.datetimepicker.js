@@ -760,8 +760,8 @@
 
 				timeboxparent.on('mousewheel', function (event) {
 					var top = Math.abs(parseInt(timebox.css('marginTop'), 10));
-
-					top = top - (event.deltaY * 20);
+					var deltaY = event.deltaY || event.originalEvent.details || event.originaldeltaY > 0 ? 1 : -1;
+					top = top - (deltaY * 20);
 					if (top < 0) {
 						top = 0;
 					}
@@ -1857,7 +1857,8 @@
 					if (!options.scrollMonth) {
 						return true;
 					}
-					if (event.deltaY < 0) {
+					var deltaY = event.deltaY || event.originalEvent.details || event.originaldeltaY > 0 ? 1 : -1;
+					if (deltaY < 0) {
 						_xdsoft_datetime.nextMonth();
 					} else {
 						_xdsoft_datetime.prevMonth();
@@ -1870,10 +1871,12 @@
 					if (!options.scrollInput) {
 						return true;
 					}
+					var deltaY = event.deltaY || event.originalEvent.details || event.originaldeltaY > 0 ? 1 : -1;
+					var deltaX = event.deltaX || event.originalEvent.details || event.originaldeltaX > 0 ? 1 : -1;
 					if (!options.datepicker && options.timepicker) {
 						current_time_index = timebox.find('.xdsoft_current').length ? timebox.find('.xdsoft_current').eq(0).index() : 0;
-						if (current_time_index + event.deltaY >= 0 && current_time_index + event.deltaY < timebox.children().length) {
-							current_time_index += event.deltaY;
+						if (current_time_index + deltaY >= 0 && current_time_index + deltaY < timebox.children().length) {
+							current_time_index += deltaY;
 						}
 						if (timebox.children().eq(current_time_index).length) {
 							timebox.children().eq(current_time_index).trigger('mousedown');
@@ -1881,7 +1884,7 @@
 						return false;
 					}
 					if (options.datepicker && !options.timepicker) {
-						datepicker.trigger(event, [event.deltaY, event.deltaX, event.deltaY]);
+						datepicker.trigger(event, [deltaY, event.deltaX, deltaY]);
 						if (input.val) {
 							input.val(_xdsoft_datetime.str());
 						}
